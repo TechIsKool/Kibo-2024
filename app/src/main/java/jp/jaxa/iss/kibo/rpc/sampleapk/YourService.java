@@ -19,6 +19,7 @@ import org.opencv.core.Mat;
 import org.opencv.aruco.Dictionary;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.android.Utils;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Size;
 import org.opencv.core.Core;
@@ -41,6 +42,8 @@ public class YourService extends KiboRpcService {
 
         // Get a camera image.
         Mat image = api.getMatNavCam();
+        api.saveMatImage(image, "hi");
+
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
@@ -67,7 +70,6 @@ public class YourService extends KiboRpcService {
 
         String[] TEMPLATE_FILE_NAME = {"beaker.png", "goggle.png", "hammer.png", "kapton_tape.png", "pipette.png", "screwdriver.png", "thermometer.png", "top.png", "watch.png", "wrench.png"};
         String[] TEMPLATE_NAME = {"beaker", "goggle", "hammer", "kapton_tape", "pipette", "screwdriver", "thermometer", "top", "watch", "wrench"};
-
         // Pattern matching
         // Load template images
         Mat[] templates = new Mat[TEMPLATE_FILE_NAME.length];
@@ -108,39 +110,39 @@ public class YourService extends KiboRpcService {
             Mat targetImg = undistortImg.clone();
 
             // Pattern matching
-            int widthMin  = 20; //[px]
+            int widthMin  = 5; //[px]
             int widthMax = 100; //[px]
             int changeWidth = 5; //[px]
             int changeAngle = 45; //[degree]
 
-            for (int i = widthMin; i <= widthMax; i += changeWidth) {
-                for (int j = 0; j <= 360; j += changeAngle) {
+            for (int i = widthMin; i <= widthMax; i += changeWidth){
+                for (int j = 0; j <= 360; j += changeAngle){
                     Mat resizedTemp = resizeImg(template, i);
                     Mat rotResizedTemp = rotImg(resizedTemp, j);
-
+                    api.saveMatImage(rotResizedTemp, "no");
                     Mat result = new Mat();
-                    Mat print = new Mat();
                     Imgproc.matchTemplate(targetImg, rotResizedTemp, result, Imgproc.TM_CCOEFF_NORMED);
-                    Core.normalize(result, print, 0, 1, Core.NORM_MINMAX, -1, new Mat());
-                    api.saveMatImage(print, "Yaay!");
-
                     // Get  coordinates with similarity grater than or equal to the threshold
-                    double threshold = 0.8;
+                    double threshold = 0.6;
                     Core.MinMaxLocResult mmlr = Core.minMaxLoc(result);
+
                     double maxVal = mmlr.maxVal;
-                    if (maxVal >= threshold) {
+                    if (maxVal >= threshold){
                         // Extract only results grater than or equal to the threshold
                         Mat thresholdedResult = new Mat();
                         Imgproc.threshold(result, thresholdedResult, threshold, 1.0, Imgproc.THRESH_TOZERO);
 
                         // Get match counts
-                        for (int y = 0; y < thresholdedResult.rows(); y++) {
-                            for (int x = 0; x < thresholdedResult.cols(); x++) {
-                                if (thresholdedResult.get(y, x)[0] > 0) {
+                        for (int y = 0; y < thresholdedResult.rows(); y++){
+                            for (int x = 0; x < thresholdedResult.cols(); x++){
+                                if (thresholdedResult.get(y, x)[0] > 0){
                                     matches.add(new org.opencv.core.Point(x, y));
                                 }
                             }
                         }
+                    }
+                    else {
+                        System.out.println("Template/Image not detected");
                     }
                 }
             }
@@ -153,24 +155,25 @@ public class YourService extends KiboRpcService {
         }
 
         // turn on the front flash light
-        api.flashlightControlFront(0.05f);
+//        api.flashlightControlFront(0.05f);
 
         // get QR code content
         String mQrContent = yourMethod();
 
         // turn off the front flash light
-        api.flashlightControlFront(0.00f);
+//        api.flashlightControlFront(0.00f);
 
         // When you recognize items, let’s set the type and number.
         int mostMatchTemlatenNum = getMaxIndex(templateMatchCnt);
+        System.out.println("name : "+ TEMPLATE_NAME[mostMatchTemlatenNum] + " number of images : " + templateMatchCnt[mostMatchTemlatenNum]);
         api.setAreaInfo(1, TEMPLATE_NAME[mostMatchTemlatenNum], templateMatchCnt[mostMatchTemlatenNum]);
 
         /* **************************************************** */
         /* Let's move to the each area and recognize the items. */
         /* **************************************************** */
 
-        Point point2 = new Point(11.05d, -9.00d, 5.13d);
-        Quaternion quaternion2 = new Quaternion(0f, 0.707f, 0f, 0.707f);
+//        Point point2 = new Point(11.05d, -9.00d, 5.13d);
+//        Quaternion quaternion2 = new Quaternion(0f, 0.707f, 0f, 0.707f);
 //        api.moveTo(point2, quaternion2, true);
 
         // When you move to the front of the astronaut, report the rounding completion.
