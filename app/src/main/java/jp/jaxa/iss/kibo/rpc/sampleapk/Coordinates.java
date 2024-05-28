@@ -5,7 +5,7 @@ import org.opencv.core.Mat;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 import jp.jaxa.iss.kibo.rpc.api.KiboRpcService;
-//
+
 public class Coordinates extends KiboRpcService {
     @Override
     protected void runPlan1(){
