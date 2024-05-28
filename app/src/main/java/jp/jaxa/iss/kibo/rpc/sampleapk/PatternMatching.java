@@ -103,7 +103,7 @@ public class PatternMatching extends KiboRpcService {
             Mat targetImg = undistortImg.clone();
 
             // Pattern matching
-            int widthMin  = 5; //[px]
+            int widthMin  = 20; //[px]
             int widthMax = 100; //[px]
             int changeWidth = 5; //[px]
             int changeAngle = 45; //[degree]
@@ -116,7 +116,7 @@ public class PatternMatching extends KiboRpcService {
                     Mat result = new Mat();
                     Imgproc.matchTemplate(targetImg, rotResizedTemp, result, Imgproc.TM_CCOEFF_NORMED);
                     // Get  coordinates with similarity grater than or equal to the threshold
-                    double threshold = 0.6;
+                    double threshold = 0.7;
                     Core.MinMaxLocResult mmlr = Core.minMaxLoc(result);
 
                     double maxVal = mmlr.maxVal;
@@ -134,9 +134,9 @@ public class PatternMatching extends KiboRpcService {
                             }
                         }
                     }
-                    else {
-                        System.out.println("Template/Image not detected");
-                    }
+//                    else {
+//                        System.out.println("Template/Image not detected");
+//                    }
                 }
             }
             // Avoid detecting the same location multiple times
