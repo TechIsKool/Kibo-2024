@@ -10,6 +10,7 @@ import org.opencv.calib3d.Calib3d;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -37,7 +38,8 @@ public class PatternMatching extends KiboRpcService {
         Mat image = api.getMatNavCam();
         api.saveMatImage(image, "hi");
 
-
+        org.opencv.core.Point matchLoc = new org.opencv.core.Point();
+        Core.MinMaxLocResult mmlr = new Core.MinMaxLocResult();
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
         /* *********************************************************************** */
@@ -116,8 +118,8 @@ public class PatternMatching extends KiboRpcService {
                     Mat result = new Mat();
                     Imgproc.matchTemplate(targetImg, rotResizedTemp, result, Imgproc.TM_CCOEFF_NORMED);
                     // Get  coordinates with similarity grater than or equal to the threshold
-                    double threshold = 0.7;
-                    Core.MinMaxLocResult mmlr = Core.minMaxLoc(result);
+                    double threshold = 0.8;
+                    mmlr = Core.minMaxLoc(result);
 
                     double maxVal = mmlr.maxVal;
                     if (maxVal >= threshold){
@@ -141,7 +143,7 @@ public class PatternMatching extends KiboRpcService {
             }
             // Avoid detecting the same location multiple times
             List<org.opencv.core.Point> filteredMatches = removeDuplicates(matches);
-            matchCnt += filteredMatches.size();
+            matchCnt = filteredMatches.size();
 
             // Number of matches for each template
             templateMatchCnt[tempNum] = matchCnt;
@@ -158,6 +160,21 @@ public class PatternMatching extends KiboRpcService {
 
         // When you recognize items, let’s set the type and number.
         int mostMatchTemlatenNum = getMaxIndex(templateMatchCnt);
+        Mat img = templates[mostMatchTemlatenNum].clone();
+        // Locate the match location
+        matchLoc = mmlr.maxLoc;
+
+        // Draw rectangle around the detected object
+        Imgproc.rectangle(
+                undistortImg,
+                matchLoc,
+                new org.opencv.core.Point(matchLoc.x + img.cols(), matchLoc.y + img.rows()),
+                new Scalar(0, 255, 0),
+                2
+        );
+
+        api.saveMatImage(undistortImg, "Final");
+
         System.out.println("name : "+ TEMPLATE_NAME[mostMatchTemlatenNum] + " number of images : " + templateMatchCnt[mostMatchTemlatenNum]);
         api.setAreaInfo(1, TEMPLATE_NAME[mostMatchTemlatenNum], templateMatchCnt[mostMatchTemlatenNum]);
 
