@@ -1,10 +1,15 @@
 package jp.jaxa.iss.kibo.rpc.sampleapk;
 
-import org.opencv.core.Mat;
+import jp.jaxa.iss.kibo.rpc.api.KiboRpcService;
 
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
-import jp.jaxa.iss.kibo.rpc.api.KiboRpcService;
+
+import org.opencv.core.Mat;
+
+/**
+ * Class meant to handle commands from the Ground Data System and execute them in Astrobee.
+ */
 
 public class Coordinates extends KiboRpcService {
     @Override
@@ -12,10 +17,25 @@ public class Coordinates extends KiboRpcService {
         // The mission starts.
         api.startMission();
 
-        // Move to a point.
-        Point point = new Point(10.9d, -9.92284d, 5.195d);
-        Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
-        api.moveTo(point, quaternion, false);
+        // Area 1 coords
+        Point area1 = new Point(10.9d, -9.92284d, 5.195d);
+        Quaternion quaternion1 = new Quaternion(0f, 0f, -0.707f, 0.707f);
+        api.moveTo(area1, quaternion1, false);
+
+        // Area 2p1 coords
+        Point area2p1 = new Point(11.235d, -9.45d, 5.295d);
+        Quaternion quaternion2p1 = new Quaternion(1, 0, 0, 0);
+        api.moveTo(area2p1, quaternion2p1, true);
+
+        // Area 2p2 coords
+        Point area2p2 = new Point(10.925d, -8.875d, 4.26203d);
+        Quaternion quaternion2p2 = new Quaternion(1, 0, 0, 0);
+        api.moveTo(area2p2, quaternion2p2, true);
+
+        // KOZ 2
+        //Point area2p2 = new Point(10.475d, -8.45d, 5.295d);
+        //Quaternion quaternion2p2 = new Quaternion(1, 0, 0, 0);
+        // api.moveTo(area2p2, quaternion2p2, true);
 
         // Get a camera image.
         Mat image = api.getMatNavCam();
