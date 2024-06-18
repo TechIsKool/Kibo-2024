@@ -55,10 +55,11 @@ public class QRCode extends KiboRpcService {
     }
 
     // You can add your method.
-    private void moveToObject(double xCord, double yCord, double zCord, float qx, float qy, float qz, float qw, double dispX, double dispY, double dispZ)
+    private Mat moveToObject(double xCord, double yCord, double zCord, float qx, float qy, float qz, float qw, double dispX, double dispY, double dispZ)
     {
+        Mat cropped = new Mat();
         Point point = new Point(xCord, yCord, zCord);
-        Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
+        Quaternion quaternion = new Quaternion(qx, qy, qz, qw);
         api.moveTo(point, quaternion, false);
         Mat init_location = api.getMatNavCam();
 
@@ -120,7 +121,7 @@ public class QRCode extends KiboRpcService {
             Mat rvecs_2 = new Mat();
             Mat tvecs_2 = new Mat();
 
-            Aruco.estimatePoseSingleMarkers(corners_2, markerLength, cameraMatrix_2, distCoeffs_2, rvecs_2, tvecs_2);
+            Aruco.estimatePoseSingleMarkers(corners_2, markerLength, cameraMatrix, distCoeffs_2, rvecs_2, tvecs_2);
             Mat rvec_2 = rvecs_2.row(0);
             Mat tvec_2 = tvecs_2.row(0);
 
@@ -134,7 +135,7 @@ public class QRCode extends KiboRpcService {
             cameraCoefficients.convertTo(cameraCoefficients, CvType.CV_64F);
 
             Mat undistortImg = new Mat();
-            Calib3d.undistort(rotatedImage, undistortImg, cameraMatrix, cameraCoefficients);
+            Calib3d.undistort(rotatedImage, undistortImg, cameraMatrix_2, cameraCoefficients);
 
             // Code for cropping the rotated image
             Dictionary dictionary_3 = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
@@ -156,11 +157,11 @@ public class QRCode extends KiboRpcService {
             Rect roi = new Rect(corner_x-195, corner_y-110, 280, 200);
 
             // Crop the image using the defined ROI
-            Mat cropped = new Mat(undistortImg, roi);
+            cropped = new Mat(undistortImg, roi);
             api.saveMatImage(cropped, "cropped image");
-
             System.out.println("Image cropped and saved successfully");
         }
+        return cropped;
     }
 
     private static double calculateRotationAngle(Mat rvecs) {

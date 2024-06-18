@@ -22,20 +22,55 @@ public class Coordinates extends KiboRpcService {
         Quaternion quaternion1 = new Quaternion(0f, 0f, -0.707f, 0.707f);
         api.moveTo(area1, quaternion1, false);
 
-        // Area 2p1 coords
-        Point area2p1 = new Point(11.235d, -9.45d, 5.295d);
-        Quaternion quaternion2p1 = new Quaternion(1, 0, 0, 0);
-        api.moveTo(area2p1, quaternion2p1, true);
+        // Area 2 coords
+        Point area2p1 = new Point(11.195d, -8.875d, 5.295d);
+        Quaternion quaternion2 = new Quaternion(0, 0.707f, 0, 0.707f);
+        api.moveTo(area2p1, quaternion2, true);
 
-        // Area 2p2 coords
-        Point area2p2 = new Point(10.925d, -8.875d, 4.26203d);
-        Quaternion quaternion2p2 = new Quaternion(1, 0, 0, 0);
-        api.moveTo(area2p2, quaternion2p2, true);
+        Point area2p2 = new Point(10.925d, -8.875d, 4.55d);
+        api.moveTo(area2p2, quaternion2, true);
 
-        // KOZ 2
-        //Point area2p2 = new Point(10.475d, -8.45d, 5.295d);
-        //Quaternion quaternion2p2 = new Quaternion(1, 0, 0, 0);
-        // api.moveTo(area2p2, quaternion2p2, true);
+        // Area 3 coords
+        Point area3 = new Point(10.925d, -7.925d, 4.55d);
+        api.moveTo(area3, quaternion2, true);
+
+        // Area 4 coords
+        Point area4p1 = new Point(10.56d, -7.35d, 4.62d);
+        Quaternion quaternion3 = new Quaternion(0f, 0f, 1.0f,0);
+        Quaternion quaternion5 = new Quaternion(0, 0, 0f, 0f);
+        api.moveTo(area4p1, quaternion3, true);
+
+        Point area4p2 = new Point(11.235d, -6.8525d, 4.945d);
+        api.moveTo(area4p2, quaternion3, true);
+
+        // Astrounut Cords
+        Point astrounut = new Point(11.143d, -6.7d, 4.945d);
+        Quaternion quaternion4 = new Quaternion(0, 0, 0.707f, 0.707f);
+        api.moveTo(astrounut, quaternion4, true);
+
+//        // Astrounut to Area 4
+//        api.moveTo(area4p2, quaternion3, true);
+//
+//        // Astrounut to Area 3
+//        api.moveTo(area4p2, quaternion3, true);
+//        api.moveTo(area4p1, quaternion3, true);
+//        api.moveTo(area3, quaternion2, true);
+//
+//        // Astrounut to Area 2
+//        Point astro_area2p1 = new Point(11.235d, -7.4d, 5.295d);
+//        api.moveTo(astro_area2p1, quaternion2, true);
+//        Point astro_area2p2 = new Point(11.235d, -7.4d, 4.55d);
+//        api.moveTo(astro_area2p2, quaternion2, true);
+//        Point astro_area2p3 = new Point(10.925d, -8.875d, 4.55d);
+//        api.moveTo(astro_area2p3, quaternion2, true);
+//
+//        // Astrounut to Area 1
+//        Point astro_area1p1 = new Point(11.235d, -7.4d, 5.295d);
+//        api.moveTo(astro_area1p1, quaternion1, true);
+//        Point astro_area1p2 = new Point(11.235d, -8.5d, 4.62d);
+//        api.moveTo(astro_area1p2, quaternion1, true);
+//        api.moveTo(area2p1, quaternion2, true);
+//        api.moveTo(area1, quaternion1, false);
 
         // Get a camera image.
         Mat image = api.getMatNavCam();
